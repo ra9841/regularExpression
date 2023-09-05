@@ -1,5 +1,6 @@
 package com.rabin.practice.project.restApi.intel.project.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class MyController {
     private CustomerService customerService;
 
     @PostMapping("/registers")
-    public CustomerDto registeringCustomerDetails(@RequestBody CustomerDto customerDto) {
+    public CustomerDto registeringCustomerDetails(@RequestBody @Valid CustomerDto customerDto) {
         log.info("data from controller:" + customerDto);
         return customerService.savingCustomerDetails(customerDto);
 
@@ -45,7 +46,7 @@ public class MyController {
     }
 
     @PutMapping("/updates/{username}")
-    public ResponseEntity<CustomerDto> updatingRecordBasisOfUsername(@RequestBody CustomerDto customerDto,@PathVariable String username) throws NoSuchFieldException{
+    public ResponseEntity<CustomerDto> updatingRecordBasisOfUsername(@RequestBody @Valid CustomerDto customerDto,@PathVariable String username) throws NoSuchFieldException{
         CustomerDto customerDto1=customerService.updateRecordByUsername(customerDto,username);
         log.info("Record from controller:"+customerDto1);
         if(customerDto1==null){

@@ -81,6 +81,8 @@ public class CustomerServiceImpl implements CustomerService {
         customerDto1.setUsername(customerDto.getUsername());
         customerDto1.setPassword(customerDto.getPassword());
         customerDto1.setEmail(customerDto.getEmail());
+        customerDto1.setAge(customerDto.getAge());
+        customerDto1.setPhoneNumber(customerDto.getPhoneNumber());
 
         Optional<CustomerEntity> existCustomer = customerRepository.findByUsername(username);
         if (existCustomer.isPresent()) {
