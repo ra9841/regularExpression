@@ -5,6 +5,7 @@ import com.rabin.practice.project.restApi.intel.project.dto.CustomerDto;
 import com.rabin.practice.project.restApi.intel.project.entity.CustomerEntity;
 import com.rabin.practice.project.restApi.intel.project.exception.UserAlreadyExistException;
 import com.rabin.practice.project.restApi.intel.project.repository.CustomerRepository;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
 
     @Override
+    @Observed(name="saving.customer")//custom metrics
     public CustomerDto savingCustomerDetails(CustomerDto customerDto) {
         CustomerEntity customerEntity = new CustomerEntity();
         BeanUtils.copyProperties(customerDto, customerEntity);
@@ -44,6 +46,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Observed(name="get.customer")
     public List<CustomerDto> getListOFRecords() {
         List<CustomerEntity> customerEntities = customerRepository.findAll();
         List<CustomerDto> customerDtos = new ArrayList<>();
@@ -59,6 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Cacheable(cacheNames = "customer",key="#username")
+    @Observed(name="get.particularCustomers")
     public CustomerDto getParticularRecordOfUsername(String username) throws NoSuchFieldException {
        log.info("fetching customer record form database");
         Optional<CustomerEntity> existUsername = customerRepository.findByUsername(username);
