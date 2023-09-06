@@ -14,16 +14,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 public class CustomerServiceImpl implements CustomerService {
-    private final static Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomerServiceImpl.class);
+
+    private static final SimpleDateFormat dateFormat=new SimpleDateFormat("HH:mm:ss");
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -47,6 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Observed(name="get.customer")
+    @Scheduled(fixedRate = 5000)
     public List<CustomerDto> getListOFRecords() {
         List<CustomerEntity> customerEntities = customerRepository.findAll();
         List<CustomerDto> customerDtos = new ArrayList<>();
@@ -55,6 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
             BeanUtils.copyProperties(customer, customerDto);
             customerDtos.add(customerDto);
         }
+        log.info("The time is now {}",dateFormat.format(new Date()));
         log.info("List of Record from database:" + customerDtos);
         return customerDtos;
     }
