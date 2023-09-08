@@ -18,10 +18,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,7 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Observed(name="get.customer")
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 50000)
     public List<CustomerDto> getListOFRecords() {
         List<CustomerEntity> customerEntities = customerRepository.findAll();
         List<CustomerDto> customerDtos = new ArrayList<>();
@@ -126,6 +124,41 @@ public class CustomerServiceImpl implements CustomerService {
             return "user not exist";
         }
 
+    }
+
+    @Override
+    public CustomerDto getCustomerRecordByEmail(String email) throws NoSuchFieldException {
+        Optional<CustomerEntity>existCustomer=customerRepository.findByEmail(email);
+        if(existCustomer.isPresent()){
+            CustomerEntity customerEntity=existCustomer.get();
+            log.info("record email from database:" +customerEntity);
+            CustomerDto customerDto=new CustomerDto();
+            BeanUtils.copyProperties(customerEntity,customerDto);
+            log.info("record send to controller:" + customerDto);
+            return customerDto;
+        }else{
+            throw new NoSuchFieldException("such email is not in the record");
+        }
+
+    }
+
+    @Override
+    public List<CustomerDto> getListOfUsernameOnAscending() {
+        List<CustomerDto> customerDto = getListOFRecords();
+        log.info("data get from another method:" + customerDto);
+        return customerDto.stream()
+                .sorted(Comparator.comparing(CustomerDto::getUsername))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CustomerDto> getListOfUsernameOnDscending() {
+        List<CustomerDto> customerDto = getListOFRecords();
+        log.info("data get from another method:" + customerDto);
+        return customerDto.stream()
+                .sorted(Comparator.comparing(CustomerDto::getUsername,Comparator.reverseOrder()))
+                .collect(Collectors.toList());
     }
 
 

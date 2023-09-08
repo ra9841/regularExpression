@@ -68,6 +68,33 @@ public class MyController {
             return "user not exist";
         }
 
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<CustomerDto> getRecordByEmail(@PathVariable String email) throws NoSuchFieldException {
+        CustomerDto customerDto=customerService.getCustomerRecordByEmail(email);
+        log.info("record get in controller:" + customerDto);
+        return ResponseEntity.ok(customerDto);
 
     }
+
+
+    @GetMapping("/ascSorting")
+    public ResponseEntity<List<CustomerDto>> getListOfRecordOnUsernameAscending(){
+        List<CustomerDto>customerDto=customerService.getListOfUsernameOnAscending();
+        log.info("record get by controller from service:" + customerDto);
+        return ResponseEntity.ok(customerDto);
+    }
+
+    @GetMapping("/dscSorting")
+    public ResponseEntity<List<CustomerDto>> getListOfRecordOnUsernameDscending(){
+        List<CustomerDto>customerDto=customerService.getListOfUsernameOnDscending();
+        log.info("record get by controller from service:" + customerDto);
+        return ResponseEntity.ok(customerDto);
+    }
+
+
+
+
+
 }

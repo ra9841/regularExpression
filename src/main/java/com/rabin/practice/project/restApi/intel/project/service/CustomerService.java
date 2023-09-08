@@ -15,4 +15,11 @@ public interface CustomerService {
     CustomerDto getParticularRecordOfUsername(String username) throws NoSuchFieldException;
 
     String deleteCustomerRecord(String username) ;
+
+
+    CustomerDto getCustomerRecordByEmail(String email) throws NoSuchFieldException;
+
+    List<CustomerDto> getListOfUsernameOnAscending();
+
+    List<CustomerDto> getListOfUsernameOnDscending();
 }
