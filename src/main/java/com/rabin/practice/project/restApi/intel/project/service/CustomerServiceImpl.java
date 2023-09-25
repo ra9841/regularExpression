@@ -49,19 +49,29 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Observed(name="get.customer")
+    @Observed(name = "get.customer")
     @Scheduled(fixedRate = 50000)
     public List<CustomerDto> getListOFRecords() {
-        List<CustomerEntity> customerEntities = customerRepository.findAll();
-        List<CustomerDto> customerDtos = new ArrayList<>();
-        for (CustomerEntity customer : customerEntities) {
-            CustomerDto customerDto = new CustomerDto();
-            BeanUtils.copyProperties(customer, customerDto);
-            customerDtos.add(customerDto);
-        }
         log.info("The time is now {}",dateFormat.format(new Date()));
-        log.info("List of Record from database:" + customerDtos);
-        return customerDtos;
+        return customerRepository.findAll()
+                .stream().map(m -> {
+                    CustomerDto customerDto = new CustomerDto();
+                    BeanUtils.copyProperties(m, customerDto);
+                    return customerDto;
+                })
+
+                .collect(Collectors.toList());
+
+//       list<CustomerEntity>customerEntities=customerRepository.findAll();
+//        List<CustomerDto> customerDtos = new ArrayList<>();
+//        for (CustomerEntity customer : customerEntities) {
+//            CustomerDto customerDto = new CustomerDto();
+//            BeanUtils.copyProperties(customer, customerDto);
+//            customerDtos.add(customerDto);
+//        }
+//        log.info("The time is now {}",dateFormat.format(new Date()));
+//        log.info("List of Record from database:" + customerDtos);
+//        return customerDtos;
     }
 
 
